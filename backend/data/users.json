@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "name": "Sarah Chen",
+    "username": "sarahchen",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "xp": 8450,
+    "problemsSolved": 127,
+    "rank": 1
+  },
+  {
+    "id": 2,
+    "name": "Mike Johnson",
+    "username": "mikej",
+    "avatar": "https://i.pravatar.cc/150?img=2",
+    "xp": 7890,
+    "problemsSolved": 112,
+    "rank": 2
+  },
+  {
+    "id": 3,
+    "name": "Emma Liu",
+    "username": "emmaliu",
+    "avatar": "https://i.pravatar.cc/150?img=3",
+    "xp": 7250,
+    "problemsSolved": 98,
+    "rank": 3
+  },
+  {
+    "id": 4,
+    "name": "David Park",
+    "username": "davidp",
+    "avatar": "https://i.pravatar.cc/150?img=4",
+    "xp": 6800,
+    "problemsSolved": 89,
+    "rank": 4
+  },
+  {
+    "id": 5,
+    "name": "Lisa Wang",
+    "username": "lisaw",
+    "avatar": "https://i.pravatar.cc/150?img=5",
+    "xp": 6500,
+    "problemsSolved": 85,
+    "rank": 5
+  },
+  {
+    "id": 6,
+    "name": "James Wilson",
+    "username": "jamesw",
+    "avatar": "https://i.pravatar.cc/150?img=6",
+    "xp": 6350,
+    "problemsSolved": 82,
+    "rank": 6
+  },
+  {
+    "id": 7,
+    "name": "Alex Dev",
+    "username": "alexdev",
+    "avatar": "https://i.pravatar.cc/150?img=7",
+    "xp": 6180,
+    "problemsSolved": 45,
+    "rank": 7,
+    "isCurrentUser": true
+  }
+]

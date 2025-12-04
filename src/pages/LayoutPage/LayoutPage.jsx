@@ -6,7 +6,7 @@ import { Box } from '@mui/material'
 const LayoutPage = () => {
   return (
     <Box sx={{display: "flex", height: "100vh"}}>
-        {/* <Navbar /> */}
+        <Navbar /> 
         <Outlet />
     </Box>
   )

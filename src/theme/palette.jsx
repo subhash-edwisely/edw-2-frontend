@@ -148,16 +148,36 @@ const palette = {
     gradient: primary_gradient,
     additionalColorPalette: ADDITIONALCOLORPALETTE,
     background: {
-        paper: '#fff',
-        default: GREY[100],
+        paper: '#ffffff',
+        default: '#0E1320',
         neutral: GREY[200],
+        elevated: '#1A2032',
     },
     text: {
         primary: '#393A3D',
         secondary: GREY[600],
         disabled: GREY[500],
     },
-
+    heading:{
+        primary: '#ffffff',
+    },
+    xp:{
+        primary: '#EAB308',
+    },
+    difficulty_tags:{
+        easy: {
+            background: 'rgba(34, 197, 94, 0.15)',
+            text: '#22c55e',
+        },
+        medium:{
+            background: 'rgba(245, 158, 11, 0.15)',
+            text: '#f59e0b',
+        },
+        hard:{
+            background: 'rgba(239, 68, 68, 0.15)',
+            text: '#ef4444',
+        },
+    },
 };
 
 export default palette;
