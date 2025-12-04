@@ -14,13 +14,15 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Markdown from 'react-markdown'
+import { useSelector } from "react-redux";
 
-const Editorial = ({editorialData}) => {
+const Editorial = () => {
+
+  const editorial = useSelector(state => state.problem.editorial);
 
   const [approachIndex, setApproachIndex] = useState(0);
   const [language, setLanguage] = useState("python");
-  const editorial = editorialData;
-;
+
   const approach = editorial.approaches[approachIndex];
   const languages = Object.keys(approach.code);
 
@@ -39,7 +41,7 @@ const Editorial = ({editorialData}) => {
 
       {/* Overview */}
       <Paper sx={{ p: 3, mb: 4 }}>
-        <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
+        <Typography variant="body1" component={"div"} sx={{ whiteSpace: "pre-line" }}>
           <Markdown>
             {editorial.overview}
           </Markdown>
@@ -64,6 +66,7 @@ const Editorial = ({editorialData}) => {
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography
           variant="body1"
+          component={"div"}
           sx={{ whiteSpace: "pre-line", lineHeight: 1.8 }}
         >
           <Markdown>

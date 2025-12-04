@@ -5,39 +5,26 @@ import ProblemDescriptionSection from '../../features/CodeEditorPage/ProblemDesc
 import CodeEditorSection from '../../features/CodeEditorPage/CodeEditorSection/CodeEditorSection.jsx';
 import CodingAssistantSection from '../../features/CodeEditorPage/CodeAssistantSection/CodingAssistantSection.jsx';
 import HorizontalHandle from '../../features/CodeEditorPage/components/HorizontalHandle.jsx';
-import { getProblemById, getProblemConstraints, getProblemEditorial, getProblemHints, getProblemTags, getProblemTestCases, getSnippetsByProblem } from '../../api/api.js';
 import { useParams } from 'react-router-dom';
-
+import { useDispatch, useSelector } from "react-redux";
+import { getProblemData } from "../../store/features/problem/problemSlice.js";
+import { getUserSubmissionData, getUserProblemSubmissionData } from '../../store/features/submission/submissionSlice.js';
+import { togglePanelVisibility } from '../../store/features/showAIPanel/showAISlice.js';
 
 const CodeEditorPage = () => {
   
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const [showAI, setShowAI] = useState(false);
-  const [problemData, setProblemData] = useState({});
-  const [tagsData, setTagsData] = useState([]);
-  const [hintsData, setHintsData] = useState([]);
-  const [constraintsData, setConstraintsData] = useState([]);
-  const [editorialData, setEditorialData] = useState({});
-  const [snippetsData, setSnippetsData] = useState([]);
-  const [testcases, setTestcases] = useState([]);
+  const userId = "user_1";
+
+  const showAI = useSelector(state => state.showAIPanel.showAI);
 
   useEffect(() => {
-    const problem = getProblemById(id);
-    const tags = getProblemTags(id);
-    const hints = getProblemHints(id);
-    const constraints = getProblemConstraints(id);
-    const editorial = getProblemEditorial(id);
-    const snippets = getSnippetsByProblem(id);
-    const tcs = getProblemTestCases(id);
-
-    setProblemData(problem);
-    setTagsData(tags);
-    setHintsData(hints);
-    setConstraintsData(constraints);
-    setEditorialData(editorial);
-    setSnippetsData(snippets);
-    setTestcases(tcs);
-  }, [id]);
+    // data sotre cheste -> dispatch , ikkada id store chestunna, so dispatch
+    dispatch(getProblemData(id));
+    dispatch(getUserSubmissionData(userId));
+    dispatch(getUserProblemSubmissionData({userId, id}));
+  }, [userId, id]);
 
 
 
@@ -52,7 +39,7 @@ const CodeEditorPage = () => {
         <Box sx={{
                   display: "flex", 
                   justifyContent: "center", 
-                  alignItems: "center", 
+                  alignItems: "center",
                   width: "100%", 
                   height: "65px", 
                   paddingX: "8px", 
@@ -61,7 +48,7 @@ const CodeEditorPage = () => {
                   borderColor: "grey.1300"
                 }}
         >
-          <Button variant='contained' onClick={() => setShowAI(!showAI)}>
+          <Button variant='contained' onClick={() => dispatch(togglePanelVisibility())}>
             {showAI ? "Close" : "Ask AI"}
           </Button>
         </Box>
@@ -72,13 +59,13 @@ const CodeEditorPage = () => {
         <PanelGroup direction='horizontal'>
 
           {/* left */}
-          <ProblemDescriptionSection problemData={problemData} tagsData={tagsData} hintsData={hintsData} constraintsData={constraintsData} editorialData={editorialData} />
+          <ProblemDescriptionSection />
 
           {/* resize handle */}
           <HorizontalHandle />
 
           {/* center */}
-          <CodeEditorSection snippetsData={snippetsData} testcases={testcases} />
+          <CodeEditorSection />
 
           {
             showAI 

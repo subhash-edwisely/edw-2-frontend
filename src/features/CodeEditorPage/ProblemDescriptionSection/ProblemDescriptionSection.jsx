@@ -5,7 +5,7 @@ import Description from './components/Description.jsx';
 import Editorial from './components/Editorial.jsx';
 import Submissions from './components/Submissions.jsx';
 
-const ProblemDescriptionSection = ({problemData, tagsData, hintsData, constraintsData, editorialData}) => {
+const ProblemDescriptionSection = () => {
 
   const tabLabels = ["Description", "Editorial", "Submissions"];
   const [activeTab, setActiveTab] = useState(0);
@@ -48,24 +48,13 @@ const ProblemDescriptionSection = ({problemData, tagsData, hintsData, constraint
           }}
         >
 
-          {activeTab === 0 
-              &&
-            (<Description 
-              problemData={problemData} 
-              tagsData={tagsData} 
-              hintsData={hintsData} 
-              constraintsData={constraintsData} 
-            />
-          )}
+          {activeTab === 0 && (<Description />)}
 
-          {activeTab === 1 
-              &&
-            (<Editorial editorialData={editorialData} />)
-          }
+          {activeTab === 1 && (<Editorial />)}
 
           {activeTab === 2 
               &&
-            (<Submissions userId={"user_1"} problemId={"prob_1"} />)
+            (<Submissions />)
           }
 
         </Box>

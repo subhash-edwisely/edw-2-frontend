@@ -14,9 +14,18 @@ import {
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { BadgeIndianRupee } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
-const Description = ({ problemData, tagsData, hintsData, constraintsData }) => {
-  const { title, difficulty, xpReward, description } = problemData
+const Description = () => {
+
+  const problem = useSelector(state => state.problem.data);
+  const tagsData = useSelector(state => state.problem.tags);
+  const hintsData = useSelector(state => state.problem.hints);
+  const constraintsData = useSelector(state => state.problem.constraints);
+  
+
+  const { title, difficulty, description, xpReward } = problem;
+
 
   const difficultyColor =
     difficulty === 'Easy'

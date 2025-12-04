@@ -15,6 +15,9 @@ import {
 
 import { getAllLanguages, getSubmissionAnswers, getUserSubmissions } from "../../../../api/api.js";
 import { X } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useSelector } from "react-redux";
 
 const statusColors = {
   "Accepted": "success",
@@ -23,24 +26,21 @@ const statusColors = {
   "Time Limit Exceeded": "warning"
 };
 
-const Submissions = ({ userId, problemId }) => {
-  const [submissions, setSubmissions] = useState([]);
+const Submissions = () => {
+  
+  const submissions = useSelector(state => state.submissions.currProbSubs);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const languages = getAllLanguages();
 
-  useEffect(() => {
-    const data = getUserSubmissions(userId).filter(
-      (s) => s.problemId === problemId
-    );
-    setSubmissions(data);
-  }, [userId, problemId]);
+  
 
   const handleViewCode = (submission) => {
     const answer = getSubmissionAnswers(submission.id)[0];
 
-    setSelectedSubmission(submission);
+    // setSelectedSubmission(submission);
     setSelectedAnswer(answer);
     setOpenDialog(true);
   };
@@ -120,18 +120,14 @@ const Submissions = ({ userId, problemId }) => {
                 />
               </Stack>
 
-              <pre
-                style={{
-                  background: "#1e1e1e",
-                  padding: "16px",
-                  borderRadius: "8px",
-                  color: "#fff",
-                  overflowX: "auto",
-                  fontSize: "14px"
-                }}
-              >
-                {selectedAnswer.code}
-              </pre>
+              <SyntaxHighlighter language={languages.find(
+                      (l) => l.id === selectedAnswer.languageId
+                    )?.name} style={oneDark}>
+                
+                  {selectedAnswer.code}
+                
+              </SyntaxHighlighter>
+
             </Stack>
           ) : (
             <Typography>Loading...</Typography>

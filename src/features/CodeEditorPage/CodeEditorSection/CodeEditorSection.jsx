@@ -4,15 +4,15 @@ import CodeEditor from "./components/CodeEditor/CodeEditor.jsx";
 import TestcasesBlock from './components/TestcasesBlock.jsx';
 import VerticalHandle from "../components/VerticalHandle.jsx";
 
-const CodeEditorSection = ({snippetsData, testcases}) => {
+const CodeEditorSection = () => {
   return (
     <Panel minSize={5}>
       <PanelGroup direction='vertical'>
-        <CodeEditor snippetsData={snippetsData} />
+        <CodeEditor />
 
         <VerticalHandle />
 
-        <TestcasesBlock testcases={testcases} />
+        <TestcasesBlock />
       </PanelGroup>
     </Panel>
   )

@@ -117,7 +117,7 @@ export const getUserSubmissions = (userId) => {
     {
       id: "sub_8",
       userId: "user_1",
-      problemId: "prob_1",
+      problemId: "prob_2",
       status: "Time Limit Exceeded",
       createdAt: "2025-02-10T14:20:00Z"
     },

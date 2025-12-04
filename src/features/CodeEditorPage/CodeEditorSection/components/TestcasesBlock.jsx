@@ -8,8 +8,12 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
+import { useSelector } from 'react-redux';
 
-const TestcasesBlock = ({ testcases }) => {
+const TestcasesBlock = () => {
+
+  const testcases = useSelector(state => state.problem.testcases);
+
   const visibleTestcases =
     testcases
       ?.filter(tc => !tc.isHidden)

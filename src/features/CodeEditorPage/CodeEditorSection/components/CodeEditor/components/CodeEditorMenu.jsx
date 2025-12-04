@@ -20,7 +20,7 @@ const CodeEditorMenu = ({editorTheme, setEditorTheme, language, setLanguage}) =>
   return (
     <Box sx={{width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", p: 1, bgcolor: "grey.1200"}}>
         <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px" }}>
-            <Select defaultValue={language} onChange={(e) => {changeEditorLanguage(e)}} size="small" sx={{bgcolor: "grey.1300", color: "additionalColorPalette.textColor"}}>
+            <Select value={language} onChange={(e) => {changeEditorLanguage(e)}} size="small" sx={{bgcolor: "grey.1300", color: "additionalColorPalette.textColor"}}>
                 <MenuItem value="python">Python</MenuItem>
                 <MenuItem value="java">Java</MenuItem>
                 <MenuItem value="cpp">C++</MenuItem>

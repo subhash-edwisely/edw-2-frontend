@@ -1,7 +1,8 @@
 import AppRouter from './routes/AppRouter.jsx';
 import ThemeProvider from './theme';
 import { Typography } from '@mui/material';
-const App = ()=>{
+const App = () => {
+
   return (
     <ThemeProvider>
       <AppRouter />    
