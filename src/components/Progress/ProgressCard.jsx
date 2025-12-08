@@ -6,6 +6,7 @@ import {
   Box,
   LinearProgress,
   Skeleton,
+  useTheme,
 } from '@mui/material';
 import {
   AreaChart,
@@ -20,7 +21,7 @@ import axios from 'axios';
 function ProgressCard() {
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const theme = useTheme();
   useEffect(() => {
     const fetchProgress = async () => {
       try {
@@ -37,17 +38,23 @@ function ProgressCard() {
   }, []);
 
   const CustomTooltip = ({ active, payload }) => {
+    const theme = useTheme();
+  
     if (active && payload && payload.length) {
       return (
         <Box
           sx={{
-            backgroundColor: '#1e3a5f',
-            padding: '8px 12px',
-            borderRadius: '6px',
-            border: '1px solid #3b82f6',
+            backgroundColor: theme.palette.background.elevated,   // FIXED
+            padding: "8px 12px",
+            borderRadius: "8px",
+            border: `1px solid ${theme.palette.primary.main}`,     // FIXED
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.4)",
           }}
         >
-          <Typography variant="body2" sx={{ color: 'text.primary' }}>
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.common.white }}              // FIXED
+          >
             {payload[0].value} problems
           </Typography>
         </Box>
@@ -55,6 +62,7 @@ function ProgressCard() {
     }
     return null;
   };
+  
 
   if (loading) {
     return (
@@ -94,40 +102,71 @@ function ProgressCard() {
           Your Progress
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 15, mb: 3 }}>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 700,
-                color: 'primary.main',
-                lineHeight: 1,
-              }}
-              data-testid="text-xp-achieved"
-            >
-              {progress?.currentUser?.xp ? Math.floor(progress.currentUser.xp / 100) : 18}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              XP ACHIEVED
-            </Typography>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 700,
-                color: 'text.primary',
-                lineHeight: 1,
-              }}
-              data-testid="text-problems-solved"
-            >
-              {progress?.currentUser?.problemsSolved || 45}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              SOLVED
-            </Typography>
-          </Box>
-        </Box>
+        <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
+  
+  {/* XP BOX */}
+  <Box
+    sx={{
+      width: "159px",
+      height: "72px",
+      borderRadius: "12px",
+      backgroundColor: theme.palette.grey[100],
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      border: "1px solid rgba(255,255,255,0.1)",
+    }}
+  >
+    <Typography
+      variant="h4"
+      sx={{
+        fontWeight: 700,
+        color: "primary.main",
+        lineHeight: 1,
+      }}
+    >
+      {progress?.currentUser?.xp
+        ? Math.floor(progress.currentUser.xp / 100)
+        : 18}
+    </Typography>
+    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+      XP ACHIEVED
+    </Typography>
+  </Box>
+
+  {/* SOLVED BOX */}
+  <Box
+    sx={{
+      width: "159px",
+      height: "72px",
+      borderRadius: "12px",
+      backgroundColor: theme.palette.grey[100],
+      border: "1px solid rgba(255,255,255,1)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      
+    }}
+  >
+    <Typography
+      variant="h4"
+      sx={{
+        fontWeight: 700,
+        color: "text.primary",
+        lineHeight: 1,
+      }}
+    >
+      {progress?.currentUser?.problemsSolved || 45}
+    </Typography>
+    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+      SOLVED
+    </Typography>
+  </Box>
+
+</Box>
+
 
         <Box sx={{ height: 120, mb: 3 }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -159,6 +198,7 @@ function ProgressCard() {
                 stroke="#3b82f6"
                 strokeWidth={2}
                 fill="url(#colorProblems)"
+                color= "white"
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -167,7 +207,7 @@ function ProgressCard() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: 'success.main' }}>
+              <Typography variant="body2" sx={{ color: 'text.primary' }}>
                 Easy
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -182,7 +222,7 @@ function ProgressCard() {
                 borderRadius: 3,
                 backgroundColor: 'rgba(34, 197, 94, 0.2)',
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: 'success.main',
+                  backgroundColor: 'success.700',
                   borderRadius: 3,
                 },
               }}
@@ -192,7 +232,7 @@ function ProgressCard() {
 
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: 'warning.main' }}>
+              <Typography variant="body2" sx={{ color: 'text.primary' }}>
                 Medium
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -217,7 +257,7 @@ function ProgressCard() {
 
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: 'error.main' }}>
+              <Typography variant="body2" sx={{ color: 'text.primary' }}>
                 Hard
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>

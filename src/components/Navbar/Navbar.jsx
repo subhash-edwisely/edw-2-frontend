@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -19,23 +18,34 @@ import {
   Bolt as BoltIcon,
   Code as CodeIcon,
 } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
-export default function Navbar() {
+
+
+export default function Navbar({ darkMode, setDarkMode}) {
   const theme = useTheme();
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [darkMode, setDarkMode] = useState(false);
+  
+  
 
   const handleThemeToggle = () => setDarkMode(!darkMode);
+  const location = useLocation();
+
+const getActiveTab = () => {
+  if (location.pathname === '/all-problems') return 'problems';
+  return 'dashboard';
+};
+
 
   return (
     <AppBar
-      position="sticky"
-      elevation={0}
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderBottom: `1px solid ${theme.palette.divider}`,
-      }}
-    >
+    position="sticky"
+    elevation={0}
+    sx={{
+      backgroundColor: "#ffffff",
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    }}
+  >
       <Toolbar
         sx={{
           px: { xs: 2, md: 4 },     
@@ -70,69 +80,39 @@ export default function Navbar() {
 
         {/* Tabs */}
         <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
-          {['dashboard', 'problems'].map((tab) => (
-            <Button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              sx={{
-                color:
-                  activeTab === tab
-                    ? theme.palette.text.primary
-                    : theme.palette.text.secondary,
-                fontWeight: activeTab === tab ? 600 : 400,
-                borderBottom:
-                  activeTab === tab
-                    ? `2px solid ${theme.palette.primary.main}`
-                    : 'none',
-                borderRadius: 0,
-                px: 2,
-                pb: 0.5,
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  color: theme.palette.text.primary,
-                },
-                '&:focus': { outline: 'none' },
-              }}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </Button>
-          ))}
+        {['dashboard', 'problems'].map((tab) => (
+          <Button
+          key={tab}
+          component={RouterLink}                  
+          to={tab === 'dashboard' ? '/' : '/all-problems'}
+          sx={{
+            color:
+              getActiveTab() === tab
+                ? theme.palette.text.primary
+                : theme.palette.text.secondary,
+            fontWeight: getActiveTab() === tab ? 600 : 400,
+            borderBottom:
+              getActiveTab() === tab
+                ? `2px solid ${theme.palette.primary.main}`
+                : 'none',
+            borderRadius: 0,
+            px: 2,
+            pb: 0.5,
+            '&:hover': { backgroundColor: 'transparent', color: theme.palette.text.primary },
+            '&:focus': { outline: 'none' },
+          }}
+        >
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </Button>
+        
+        
+))}
+
+
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* Search */}
-        <TextField
-          placeholder="Search problems"
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon
-                  sx={{ color: theme.palette.text.secondary, fontSize: 20 }}
-                />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            width: 280,
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: 'rgba(255,255,255,0.05)',
-              borderRadius: 1,
-              '& fieldset': { borderColor: 'transparent' },
-              '&:hover fieldset': { borderColor: theme.palette.divider },
-              '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
-            },
-            '& .MuiInputBase-input': {
-              color: theme.palette.text.primary,
-              fontSize: '0.875rem',
-              '&::placeholder': {
-                color: theme.palette.text.secondary,
-                opacity: 1,
-              },
-            },
-          }}
-        />
 
         {/* Theme Toggle */}
         <IconButton
@@ -148,7 +128,7 @@ export default function Navbar() {
             '&:focus': { outline: 'none' },
           }}
         >
-          {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+          {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
 
         {/* XP Badge */}

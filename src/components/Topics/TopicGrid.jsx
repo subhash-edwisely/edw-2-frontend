@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Skeleton
-} from '@mui/material';
+import { Box, Typography, Card, CardContent, Skeleton, } from '@mui/material';
 import {
   AccountTree as AccountTreeIcon,
   Storage as StorageIcon,
@@ -14,6 +8,7 @@ import {
   Hub as HubIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
+import { useOutletContext } from 'react-router-dom';
 
 const iconMap = {
   AccountTree: AccountTreeIcon,
@@ -24,7 +19,7 @@ const iconMap = {
 };
 
 export default function TopicGrid() {
-
+  const { darkMode } = useOutletContext(); // get darkMode
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,26 +27,25 @@ export default function TopicGrid() {
     const fetchTopics = async () => {
       try {
         const response = await axios.get('/api/topics');
-
-       
         const data = Array.isArray(response.data) ? response.data : [];
-
         setTopics(data);
       } catch (error) {
         console.error('Error fetching topics:', error);
-        setTopics([]); 
+        setTopics([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchTopics();
   }, []);
 
   if (loading) {
     return (
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 2 }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 600, color: darkMode ? 'heading.primary' : 'text.primary', mb: 2 }}
+        >
           Explore Topics
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -67,7 +61,10 @@ export default function TopicGrid() {
 
   return (
     <Box sx={{ mb: 4 }} data-testid="section-explore-topics">
-      <Typography variant="h6" sx={{ fontWeight: 600, color: 'heading.primary', mb: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{ fontWeight: 600, color: darkMode ? 'heading.primary' : 'text.primary', mb: 2 }}
+      >
         Explore Topics
       </Typography>
 
@@ -79,7 +76,7 @@ export default function TopicGrid() {
             <Box
               key={topic.id}
               sx={{
-                flex: '1 1 calc(20% - 16px)', 
+                flex: '1 1 calc(20% - 16px)',
                 minWidth: '140px',
               }}
             >
