@@ -46,7 +46,7 @@ function DailyChallenge() {
       case 'hard':
         return { bg: theme.palette.difficulty_tags.hard.background, color: theme.palette.difficulty_tags.hard.text };
       default:
-        return { bg: 'rgba(148, 163, 184, 0.15)', color: '#94a3b8' };
+        return { bg: theme.palette.grey[200] + '40', color: theme.palette.grey[500]};
     }
   };
 
@@ -87,12 +87,10 @@ function DailyChallenge() {
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Typography
-            variant="caption"
+            variant="caption1"
             sx={{
               color: 'warning.main',
-              fontWeight: 600,
               textTransform: 'uppercase',
-              letterSpacing: '0.05em',
             }}
           >
             Daily Challenge
@@ -172,9 +170,9 @@ function DailyChallenge() {
           icon={<BoltIcon sx={{ fontSize: 16, color: `${theme.palette.xp.primary} !important` }} />}
           label="150"
           sx={{
-            backgroundColor: 'rgba(0,0,0,0)',
+            backgroundColor: theme.palette.common.transparent ,
             border: `1px solid ${theme.palette.xp.primary}`,
-            color: '#EAB308',
+            color: theme.palette.xp.primary,
             fontWeight: 600,
             fontSize: '0.875rem',
             ml: 1,
@@ -204,11 +202,11 @@ function DailyChallenge() {
             variant="outlined"
             startIcon={<BookmarkBorderIcon />}
             sx={{
-              borderColor: 'divider',
+              borderColor: theme.palette.divider,
               color: 'text.primary',
               '&:hover': {
                 borderColor: 'text.secondary',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                backgroundColor: theme.palette.action.hover,
               },
             }}
             data-testid="button-save"

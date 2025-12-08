@@ -116,7 +116,6 @@ function LeaderboardCard() {
               data-testid="select-leaderboard-scope"
             >
               <MenuItem value="global">Global</MenuItem>
-              <MenuItem value="friends">Friends</MenuItem>
               <MenuItem value="weekly">Weekly</MenuItem>
             </Select>
           </FormControl>

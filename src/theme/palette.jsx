@@ -133,7 +133,7 @@ const primary_gradient = 'linear-gradient(101deg, #262729 0%, #4A4B4F 100%)';
 
 const palette = {
     mode: 'light',
-    common: { black: '#000', white: '#fff' },
+    common: { black: '#000', white: '#fff', transparent: 'rgba(0,0,0,0)' },
     primary: PRIMARY,
     secondary: SECONDARY,
     success: SUCCESS,
@@ -152,6 +152,7 @@ const palette = {
         default: '#0E1320',
         neutral: GREY[200],
         elevated: '#1A2032',
+        hover: 'rgba(255, 255, 255, 0.05)',
     },
     text: {
         primary: '#393A3D',
@@ -178,6 +179,12 @@ const palette = {
             text: '#ef4444',
         },
     },
+    action: {
+        hover: 'rgba(255, 255, 255, 0.05)',
+        selected: 'rgba(59,130,246,0.08)', // optional for other uses
+      },
+    divider: GREY[200],
+
 };
 
 export default palette;

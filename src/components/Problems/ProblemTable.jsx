@@ -162,6 +162,7 @@ function ProblemTable() {
       '& fieldset': { borderColor: '#E5E7EB' },
       '&:hover fieldset': { borderColor: '#D1D5DB' },
       '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
+      
     },
   }}
 />

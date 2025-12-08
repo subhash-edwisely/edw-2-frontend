@@ -24,14 +24,15 @@ export default function LoginCard() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    const ok = login(email, password);
+  const handleSubmit = async () => {
+    const ok = await login(email, password);
     if (ok) {
       navigate("/");
     } else {
       alert("Invalid credentials");
     }
   };
+  
 
   return (
     <Card
@@ -66,30 +67,51 @@ export default function LoginCard() {
     mb: 2,
     input: { color: "#fff" },
 
-    // Label (default)
     "& .MuiInputLabel-root": {
       color: "rgba(255,255,255,0.6)",
     },
 
-    // Floating label (when shrunk)
     "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-shrink": {
       color: "#90caf9",
-      backgroundColor: "rgba(15,23,42,1)", // prevents overlap
+      backgroundColor: "rgba(15,23,42,1)",
       padding: "0 4px",
       transform: "translate(14px, -6px) scale(0.85)",
     },
 
-    // Default border
+    // Remove blue outline
+    "& .MuiOutlinedInput-root": {
+      "&:hover fieldset": {
+        borderColor: "rgba(255,255,255,0.25)",
+      },
+      "&.Mui-focused": {
+        outline: "none",
+      },
+    },
+
+    "& .MuiOutlinedInput-root.Mui-focused": {
+      outline: "none !important",
+    },
+
+    // Border styling
     "& .MuiOutlinedInput-root fieldset": {
       borderColor: "rgba(255,255,255,0.15)",
     },
 
-    // Focus border
     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
       borderColor: "#60a5fa",
     },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
   }}
 />
+
 
 
         {/* Password */}
@@ -126,6 +148,16 @@ export default function LoginCard() {
     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
       borderColor: "#60a5fa",
     },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    
   }}
   InputProps={{
     endAdornment: (
@@ -138,6 +170,7 @@ export default function LoginCard() {
         </IconButton>
       </InputAdornment>
     ),
+    
   }}
 />
 

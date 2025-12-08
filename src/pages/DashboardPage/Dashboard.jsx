@@ -1,30 +1,25 @@
 import { Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar";
 import DailyChallengeCard from "../../components/DailyChallenge/DailyChallengeCard";
 import ProblemTable from "../../components/Problems/ProblemTable";
 import ProgressCard from "../../components/Progress/ProgressCard";
 import LeaderboardCard from "../../components/Leaderboard/LeaderboardCard";
-import TopicGrid from "../../components/Topics/TopicGrid"
+import TopicGrid from "../../components/Topics/TopicGrid";
 
 export default function Dashboard() {
   const { darkMode } = useOutletContext();
+
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: darkMode ? "#0F172A" : "#F3F4F6" }}>
-       
-      {/* Navbar */}
-      {/* <Navbar /> */}
-
       {/* MAIN WRAPPER */}
       <Box
         sx={{
           mt: 4,
           mb: 4,
           px: { xs: 2, sm: 4, md: 6, lg: 10 },
-
           display: "flex",
           flexDirection: "row",
-          gap: 4,           // 👈 gap BETWEEN columns works
+          gap: 4, // gap BETWEEN columns
           alignItems: "flex-start",
         }}
       >
@@ -34,11 +29,12 @@ export default function Dashboard() {
             flex: 3,
             display: "flex",
             flexDirection: "column",
-            gap: 3,        // 👈 gap BETWEEN items inside left
+            gap: 3, // gap BETWEEN items inside left column
           }}
         >
           <DailyChallengeCard />
-          <TopicGrid />
+          {/* TopicGrid handles topic selection */}
+          <TopicGrid navigateOnClick={true} />
           <ProblemTable />
         </Box>
 
@@ -48,7 +44,7 @@ export default function Dashboard() {
             flex: 1.5,
             display: "flex",
             flexDirection: "column",
-            gap: 3,        
+            gap: 3,
           }}
         >
           <ProgressCard />
