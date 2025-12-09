@@ -1,72 +1,77 @@
-import { Box, Paper, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react'
-import { Panel } from 'react-resizable-panels'
-import Description from './components/Description.jsx';
-import Editorial from './components/Editorial.jsx';
-import Submissions from './components/Submissions.jsx';
+import { Box, Tab, Tabs, useTheme } from "@mui/material";
+import React, { useState } from "react";
+import { Panel } from "react-resizable-panels";
+
+import Description from "./components/Description.jsx";
+import Editorial from "./components/Editorial.jsx";
+import Submissions from "./components/Submissions.jsx";
 
 const ProblemDescriptionSection = () => {
-
-  const tabLabels = ["Description", "Editorial", "Submissions"];
   const [activeTab, setActiveTab] = useState(0);
+  const theme = useTheme();
+  const pp = theme.palette.problemPage;
 
   return (
     <Panel minSize={5}>
-
-      {/* for components having card-like appearance */}
-      <Paper
+      <Box
         sx={{
           height: "100%",
-          // bgcolor: "grey.1200",
-          // color: "white",
-          p: 2,
-          overflowY: "auto"
+          display: "flex",
+          flexDirection: "column",
+          bgcolor: pp.cardBg,
+          color: pp.textPrimary,
+          width: "100%"
         }}
       >
-        
-
+        {/* Tabs */}
         <Tabs
           value={activeTab}
-          onChange={(e, newValue) => setActiveTab(newValue)}
-          // textColor='inherit'
-          indicatorColor='primary'
-          variant='fullWidth'
-          sx={{ borderBottom: "1px solid #444" }}
+          onChange={(e, v) => setActiveTab(v)}
+          variant="fullWidth"
+          TabIndicatorProps={{
+            sx: {
+              height: 3,
+              borderRadius: "3px",
+              bgcolor: pp.tabIndicator,
+            },
+          }}
+          sx={{
+            borderBottom: `1px solid ${pp.cardBorder}`,
+            ".MuiTab-root": {
+              fontWeight: 600,
+              textTransform: "none",
+              color: pp.tabText,
+              "&.Mui-selected": {
+                color: pp.tabSelected,
+              },
+              "&:hover": {
+                bgcolor: pp.tabHover,
+              },
+            },
+          }}
         >
-
-          {tabLabels.map((tabLabel, idx) =>
-            <Tab key={idx} label={tabLabel} />
-          )}
-
+          <Tab label="Description" />
+          <Tab label="Editorial" />
+          <Tab label="Submissions" />
         </Tabs>
 
         <Box
           sx={{
             flex: 1,
             overflowY: "auto",
-            p: 2
+            // p: 3,
+            width: "100%",     // ensures full width
+            bgcolor: pp.cardBg,
           }}
         >
-
-          {activeTab === 0 && (<Description />)}
-
-          {activeTab === 1 && (<Editorial />)}
-
-          {activeTab === 2 
-              &&
-            (<Submissions />)
-          }
-
+          {activeTab === 0 && <Description />}
+          {activeTab === 1 && <Editorial />}
+          {activeTab === 2 && <Submissions />}
         </Box>
-        
 
-
-
-      </Paper>
-    
-    
+      </Box>
     </Panel>
-  )
-}
+  );
+};
 
-export default ProblemDescriptionSection
+export default ProblemDescriptionSection;

@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Paper, Typography, TextField, IconButton, List, ListItem, ListItemText, Divider } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { Panel } from 'react-resizable-panels';
 import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { togglePanelVisibility } from '../../../store/features/showAIPanel/showAISlice';
+import palette from '../../../theme/palette';
+import { Panel } from 'react-resizable-panels';
 
 const CodingAssistantSection = () => {
-
   const dispatch = useDispatch();
+  const mode = palette.mode; // 'light' or 'dark'
+  const themeColors = palette.problemPage;
 
   const [messages, setMessages] = useState([
     { sender: 'assistant', text: 'Hello! How can I help you today?' },
@@ -34,42 +36,94 @@ const CodingAssistantSection = () => {
   }, [messages]);
 
   return (
-    <Panel minSize={5}>
-      <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: '1px solid #ddd' }}>
-          <Typography variant="h6">Coding Assistant</Typography>
-          <CloseIcon
-            onClick={() => dispatch(togglePanelVisibility())}
-            sx={{cursor: "pointer"}} 
-          />
-        </Box>
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-          <List>
-            {messages.map((msg, index) => (
-              <ListItem key={index} sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
-                <Paper sx={{ p: 1.5, bgcolor: msg.sender === 'user' ? 'primary.main' : 'grey.200', color: msg.sender === 'user' ? 'white' : 'black', maxWidth: '70%' }}>
-                  <ListItemText primary={msg.text} />
-                </Paper>
-              </ListItem>
-            ))}
-            <div ref={messagesEndRef} />
-          </List>
-        </Box>
-        <Divider />
-        <Box sx={{ display: 'flex', p: 1 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            size="small"
-            placeholder="Type a message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-          <IconButton color="primary" onClick={handleSend}><SendIcon /></IconButton>
-        </Box>
-      </Paper>
-    </Panel> 
+    <Panel>
+      <Paper
+      elevation={3}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        bgcolor: themeColors.cardBg,
+        color: themeColors.textPrimary,
+        // borderTopLeftRadius: 8,
+        // borderTopRightRadius: 8,
+        boxShadow: 3,
+        overflow: 'hidden'
+      }}
+    >
+      {/* Header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: `1px solid ${themeColors.divider}` }}>
+        <Typography variant="h6" sx={{ color: themeColors.textPrimary }}>Coding Assistant</Typography>
+        <CloseIcon
+          onClick={() => dispatch(togglePanelVisibility())}
+          sx={{ cursor: "pointer", color: themeColors.textSecondary }}
+        />
+      </Box>
+
+      {/* Messages */}
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+        <List>
+          {messages.map((msg, index) => (
+            <ListItem
+              key={index}
+              sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start', py: 0.5 }}
+            >
+              <Paper
+                sx={{
+                  p: 1.5,
+                  bgcolor: msg.sender === 'user' ? palette.primary.main : themeColors.chipBg,
+                  color: msg.sender === 'user' ? palette.primary.contrastText : themeColors.textPrimary,
+                  maxWidth: '70%',
+                  borderRadius: 2,
+                  boxShadow: msg.sender === 'user' ? 3 : 'none',
+                  wordBreak: 'break-word'
+                }}
+              >
+                <ListItemText primary={msg.text} />
+              </Paper>
+            </ListItem>
+          ))}
+          <div ref={messagesEndRef} />
+        </List>
+      </Box>
+
+      <Divider sx={{ borderColor: themeColors.divider }} />
+
+      {/* Input */}
+      <Box sx={{ display: 'flex', p: 1, gap: 1, bgcolor: themeColors.cardBg }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          size="small"
+          placeholder="Type a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={handleKeyPress}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              bgcolor: themeColors.chipBg,
+              color: themeColors.textPrimary,
+              '& fieldset': { borderColor: themeColors.divider },
+              '&:hover fieldset': { borderColor: palette.primary.main },
+              '&.Mui-focused fieldset': { borderColor: palette.primary.main }
+            }
+          }}
+        />
+        <IconButton
+          color="primary"
+          onClick={handleSend}
+          sx={{
+            bgcolor: palette.primary.main,
+            '&:hover': { bgcolor: palette.primary.dark },
+            color: palette.primary.contrastText
+          }}
+        >
+          <SendIcon />
+        </IconButton>
+      </Box>
+    </Paper>
+    </Panel>
   );
 };
 

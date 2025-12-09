@@ -11,12 +11,7 @@ const CodeEditor = () => {
 
   return (
     <Panel>
-
-      <Box sx={{display: "flex", flexDirection: "column", height: "100%", 
-        // bgcolor: "grey.1300"
-        }}>
-        
-        <CodeEditorMenu 
+      <CodeEditorMenu 
           editorTheme={editorTheme} 
           setEditorTheme={setEditorTheme} 
           language={language}
@@ -26,9 +21,6 @@ const CodeEditor = () => {
           editorTheme={editorTheme}
           language={language} 
         />
-
-      </Box>
-
     </Panel>
   )
 }

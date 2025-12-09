@@ -1,19 +1,35 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import ProblemDashboardPage from '../pages/ProblemDashboardPage/ProblemDashboardPage.jsx'
-import CodeEditorPage from '../pages/CodeEditorPage/CodeEditorPage.jsx'
-import LayoutPage from '../pages/LayoutPage/LayoutPage.jsx';
+import { Routes, Route, Navigate } from "react-router-dom";
+import Dashboard from "../pages/DashboardPage/Dashboard.jsx";
+import CodeEditorPage from "../pages/CodeEditorPage/CodeEditorPage.jsx";
+import LayoutPage from "../pages/LayoutPage/LayoutPage.jsx";
+import AllProblemsPage from "../pages/AllProblemsPage/AllProblemsPage.jsx";
+import LoginPage from "../pages/LoginPage/LoginPage.jsx";
+import { useSelector } from "react-redux";
 
+function ProtectedRoute({ children }) {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 
 const AppRouter = () => {
   return (
     <Routes>
-        <Route path='/' element={<LayoutPage /> }>
-          <Route index element={<ProblemDashboardPage /> } />
-          <Route path='/problem/:id' element={<CodeEditorPage />} />
-        </Route>
-    </Routes>
-  )
-}
+      <Route path="/login" element={<LoginPage />} />
 
-export default AppRouter
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <LayoutPage />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="/problem/:id" element={<CodeEditorPage />} />
+        <Route path="/all-problems" element={<AllProblemsPage />} />
+      </Route>
+    </Routes>
+  );
+};
+
+export default AppRouter;

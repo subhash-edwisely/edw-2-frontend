@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProblemById, getProblemConstraints, getProblemEditorial, getProblemHints, getProblemTags, getProblemTestCases, getSnippetsByProblem } from "../../../api/api.js";
 
 const initialState = {
     data: {},
@@ -16,14 +15,15 @@ const problemSlice = createSlice({
     initialState,
     reducers: {
         getProblemData(state, action) {
-            const problemId = action.payload;
-            state.data = getProblemById(problemId);
-            state.tags = getProblemTags(problemId);
-            state.hints = getProblemHints(problemId);
-            state.constraints = getProblemConstraints(problemId);
-            state.editorial = getProblemEditorial(problemId);
-            state.testcases = getProblemTestCases(problemId);
-            state.snippets = getSnippetsByProblem(problemId);
+            const {id, data, hints, constraints, snippets, editorial, testcases, tags} = action.payload;
+            const problemId = id;
+            state.data = data;
+            state.tags = tags;
+            state.hints = hints;
+            state.constraints = constraints;
+            state.editorial = editorial;
+            state.testcases = testcases;
+            state.snippets = snippets;
         }
     }
 });

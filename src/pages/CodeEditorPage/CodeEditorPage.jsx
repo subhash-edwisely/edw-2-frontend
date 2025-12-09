@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { PanelGroup } from 'react-resizable-panels'
 import ProblemDescriptionSection from '../../features/CodeEditorPage/ProblemDescriptionSection/ProblemDescriptionSection.jsx';
@@ -10,9 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProblemData } from "../../store/features/problem/problemSlice.js";
 import { getUserSubmissionData, getUserProblemSubmissionData } from '../../store/features/submission/submissionSlice.js';
 import { togglePanelVisibility } from '../../store/features/showAIPanel/showAISlice.js';
+import { getProblemById, getProblemConstraints, getProblemEditorial, getProblemHints, getProblemTags, getProblemTestCases, getSnippetsByProblem } from '../../api/api.js';
 
 const CodeEditorPage = () => {
   
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const { id } = useParams();
   const userId = "user_1";
@@ -20,17 +22,58 @@ const CodeEditorPage = () => {
   const showAI = useSelector(state => state.showAIPanel.showAI);
 
   useEffect(() => {
+    
+    const loadProblemData = async() => {
+
+      try {
+        const data = await getProblemById(id);
+        const hints = await getProblemHints(id);
+        const constraints = await getProblemConstraints(id);
+        const snippets = await getSnippetsByProblem(id);
+        const editorial = await getProblemEditorial(id);
+        const testcases = await getProblemTestCases(id);
+        const tags = await getProblemTags(id);
+
+        console.log(data);
+        console.log(tags);
+        
+        dispatch(getProblemData({id, data, hints, constraints, snippets, editorial, testcases, tags}));
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+    loadProblemData();
+
+
     // data sotre cheste -> dispatch , ikkada id store chestunna, so dispatch
-    dispatch(getProblemData(id));
     dispatch(getUserSubmissionData(userId));
     dispatch(getUserProblemSubmissionData({userId, id}));
+
+
   }, [userId, id]);
 
 
 
+  if(loading) {
+    return (
+      <Box 
+        sx={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+      < CircularProgress size={60} />
+      </Box>
+    )
+  }
+
+
+
   return (
-
-
     <Box sx={{display: "flex", flexDirection: "column", height: "100%", width: "100%", 
     // bgcolor: "grey.1200"
     }}>
