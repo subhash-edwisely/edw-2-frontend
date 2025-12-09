@@ -27,6 +27,7 @@ function LeaderboardCard() {
     const fetchLeaderboard = async () => {
       try {
         const response = await axios.get('/api/leaderboard');
+<<<<<<< HEAD
   
         // Ensure always an array
         const data = Array.isArray(response.data)
@@ -37,14 +38,26 @@ function LeaderboardCard() {
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
         setUsers([]); // prevent crashes
+=======
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+>>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
       } finally {
         setLoading(false);
       }
     };
+<<<<<<< HEAD
   
     fetchLeaderboard();
   }, []);
   
+=======
+
+    fetchLeaderboard();
+  }, []);
+
+>>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
   const getRankBadgeColor = (rank) => {
     switch (rank) {
       case 1:

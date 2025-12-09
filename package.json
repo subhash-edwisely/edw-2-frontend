@@ -17,7 +17,10 @@
     "@mui/material": "^7.3.5",
     "@reduxjs/toolkit": "^2.11.0",
     "axios": "^1.13.2",
+<<<<<<< HEAD
     "dotenv": "^17.2.3",
+=======
+>>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.5",
     "lucide-react": "^0.555.0",
@@ -27,7 +30,8 @@
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^3.0.6",
     "react-router-dom": "^7.9.6",
-    "react-syntax-highlighter": "^16.1.0"
+    "react-syntax-highlighter": "^16.1.0",
+    "recharts": "^3.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
