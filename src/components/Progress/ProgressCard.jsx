@@ -9,7 +9,7 @@ import {
   useTheme,
 } from '@mui/material';
 import ReactECharts from 'echarts-for-react';
-import axios from 'axios';
+import { userProgress as mockProgress } from '../../api/api'; 
 
 function ProgressCard() {
   const [progress, setProgress] = useState(null);
@@ -18,18 +18,15 @@ function ProgressCard() {
 
   useEffect(() => {
     const fetchProgress = async () => {
-      try {
-        const response = await axios.get('/api/progress');
-        setProgress(response.data);
-      } catch (error) {
-        console.error('Error fetching progress:', error);
-      } finally {
-        setLoading(false);
-      }
+      // simulate delay for realism
+      await new Promise((res) => setTimeout(res, 500));
+      setProgress(mockProgress);
+      setLoading(false);
     };
 
     fetchProgress();
   }, []);
+
 
   if (loading) {
     return (
@@ -72,7 +69,7 @@ function ProgressCard() {
     },
     tooltip: {
       trigger: 'axis',
-      backgroundColor: theme.palette.background.elevated,
+      backgroundColor: theme.palette.primary.main,
       borderColor: theme.palette.primary.main,
       borderWidth: 1,
       textStyle: { color: theme.palette.common.white },

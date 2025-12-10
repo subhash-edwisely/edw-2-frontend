@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// LeaderboardCard.jsx
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,13 +11,16 @@ import {
   FormControl,
   LinearProgress,
   Skeleton,
-} from '@mui/material';
+} from "@mui/material";
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   EmojiEvents as EmojiEventsIcon,
   TrendingUp as TrendingUpIcon,
-} from '@mui/icons-material';
-import axios from 'axios';
+} from "@mui/icons-material";
+
+// Import dummy users
+import { users as dummyUsers } from "../../api/api"; // adjust path accordingly
+
 
 function LeaderboardCard() {
   const [users, setUsers] = useState([]);
@@ -26,18 +30,19 @@ function LeaderboardCard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get('/api/leaderboard');
-        setUsers(response.data);
+        // simulate network delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setUsers(dummyUsers);
       } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error("Error fetching leaderboard:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchLeaderboard();
   }, []);
-
+  
   const getRankBadgeColor = (rank) => {
     switch (rank) {
       case 1:
@@ -72,7 +77,8 @@ function LeaderboardCard() {
     );
   }
 
-  const currentUser = users.find((u) => u.isCurrentUser);
+  const currentUser = Array.isArray(users) ? users.find(u => u.isCurrentUser) : null;
+
   const topUsers = users.slice(0, 5);
   const progressToNextRank = currentUser ? ((currentUser.xp % 500) / 500) * 100 : 0;
 

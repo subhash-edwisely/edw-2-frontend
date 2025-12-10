@@ -97,6 +97,41 @@ export const loginUserMock = ({ email, password }) => {
 };
 
 
+// api.js
+
+export const topics = [
+  { id: 1, name: "Data Structures", icon: "Storage", color: "#f97316", problemCount: 120 },
+  { id: 2, name: "Algorithms", icon: "AccountTree", color: "#3b82f6", problemCount: 95 },
+  { id: 3, name: "Math", icon: "Bolt", color: "#facc15", problemCount: 80 },
+  { id: 4, name: "Strings", icon: "TextFields", color: "#10b981", problemCount: 60 },
+  { id: 5, name: "Graphs", icon: "Hub", color: "#8b5cf6", problemCount: 50 },
+];
+
+// api.js
+
+export const userProgress = {
+  currentUser: {
+    xp: 1850,
+    problemsSolved: 45,
+  },
+
+  difficultyProgress: {
+    easy: { solved: 20, total: 100 },
+    medium: { solved: 15, total: 200 },
+    hard: { solved: 10, total: 50 },
+  },
+
+  weeklyActivity: [
+    { day: "Mon", problems: 4 },
+    { day: "Tue", problems: 3 },
+    { day: "Wed", problems: 6 },
+    { day: "Thu", problems: 2 },
+    { day: "Fri", problems: 5 },
+    { day: "Sat", problems: 7 },
+    { day: "Sun", problems: 4 },
+  ],
+};
+
 export const getUserById = (userId) => {
   return {
     id: "user_1",
@@ -384,12 +419,10 @@ export const getProblemTags = async(problemId) => {
 
 // GET /api/problems (list all problems)
 
-export const getProblems = async (difficulty = "all") => {
+export const getProblems = async () => {
   try {
-    const url =
-      difficulty === "all"
-        ? `${BASE_URL}/problems`
-        : `${BASE_URL}/problems?difficulty=${difficulty}`;
+    const url =`${BASE_URL}/problems/`;
+        
     const res = await axios.get(url);
     return res.data.data || res.data;
   } catch (err) {
@@ -398,10 +431,25 @@ export const getProblems = async (difficulty = "all") => {
   }
 };
 
+// api.js
+
 export const getDailyChallenge = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/daily-challenge`);
-    return response.data;          // adjust depending on backend structure
+    // Dummy data for testing
+    const dummyData = {
+      id: "challenge_1",
+      title: "Optimize Network Delay Time",
+      difficulty: "Medium",
+      description:
+        "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node...",
+      tags: ["Graph", "Dijkstra"],
+      xp: 150
+    };
+
+    // simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return dummyData;
   } catch (error) {
     console.error("Error fetching daily challenge:", error);
     return null;

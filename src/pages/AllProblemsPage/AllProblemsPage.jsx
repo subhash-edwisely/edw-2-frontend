@@ -23,13 +23,14 @@ import { KeyboardArrowDown as KeyboardArrowDownIcon } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search';
 import BoltIcon from '@mui/icons-material/Bolt';
 
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 import TopicGrid from "../../components/Topics/TopicGrid";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedTopic, clearSelectedTopic } from '../../store/features/topic/topicSlice';
+import { getProblems} from "../../api/api";   // adjust path
+
 
 export default function AllProblemsPage() {
   const { darkMode, searchQuery, setSearchQuery } = useOutletContext();
@@ -54,45 +55,51 @@ export default function AllProblemsPage() {
   }, [darkMode]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchProblems = async () => {
       try {
-        const url =
-          difficultyFilter === 'all'
-            ? '/api/problems'
-            : `/api/problems?difficulty=${difficultyFilter}`;
+        // ❌ WRONG: getProblems(difficultyFilter)
+        // ✔️ Correct: backend always returns all problems
+        const data = await getProblems();
   
-        const response = await axios.get(url);
+        const normalizedProblems = (Array.isArray(data) ? data : []).map(p => ({
+          ...p,
+          status: p.status || 'unsolved',
+          acceptance: p.acceptance || 0,
+          topics: p.topics || [],
+          xp: p.xp_reward || 0
+        }));
   
-        const data = response.data;
-  
-        // ✅ FIX: extract the array properly
-        setProblems(
-          Array.isArray(data) 
-            ? data 
-            : data.problems || data.data || []
-        );
-  
-      } catch (error) {
-        console.error('Error fetching problems:', error);
-        setProblems([]); // prevent crash
+        setProblems(normalizedProblems);
+      } catch (err) {
+        console.error(err);
+        setProblems([]);
       } finally {
         setLoading(false);
       }
     };
-  
     fetchProblems();
-  }, [difficultyFilter]);
+  }, []);
   
-
+  
+  
   const filteredProblems = problems.filter((p) => {
     const matchesSearch =
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.topics?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-
+  
     const matchesTopic = !selectedTopic || p.topics?.includes(selectedTopic);
-
-    return matchesSearch && matchesTopic;
+  
+    const matchesDifficulty =
+      difficultyFilter === "all" ||
+      p.difficulty.toLowerCase() === difficultyFilter.toLowerCase();
+  
+    return matchesSearch && matchesTopic && matchesDifficulty;
   });
+  
+  
+
+ 
 
   const handleStatusChange = async (problemId, currentStatus) => {
     const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
