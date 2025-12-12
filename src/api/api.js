@@ -2,11 +2,7 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-<<<<<<< HEAD
 // src/users.js
-=======
-// src/data/users.js
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
 export const users = [
   {
@@ -101,7 +97,6 @@ export const loginUserMock = ({ email, password }) => {
 };
 
 
-<<<<<<< HEAD
 // api.js
 
 export const topics = [
@@ -137,8 +132,6 @@ export const userProgress = {
   ],
 };
 
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 export const getUserById = (userId) => {
   return {
     id: "user_1",
