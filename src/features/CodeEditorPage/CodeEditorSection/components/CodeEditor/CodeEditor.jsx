@@ -19,9 +19,11 @@ const CodeEditor = () => {
   const problemId = useSelector(state => state.problem.id);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const userId = user?.id;
 
   const runCodeExecution = async(mode) => {
-    const source_code = localStorage.getItem(`code-problem-${problemId}-${language.toLowerCase()}`)
+    const source_code = localStorage.getItem(`code-user-${userId}-problem-${problemId}-${language.toLowerCase()}`)
 
     if(!source_code || source_code.trim() == "") {
       setSnackBarOpen(true);

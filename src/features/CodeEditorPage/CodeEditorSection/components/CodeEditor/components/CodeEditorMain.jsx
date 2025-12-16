@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 
 const CodeEditorMain = ({ editorTheme, language }) => {
   const problemId = useSelector(state => state.problem.id);
+  const user = useSelector(state => state.auth.user);
+  const userId = user?.id;
   const snippetsData = useSelector(state => state.problem.snippets);
   const langs = useSelector(state => state.problem.languages);
 
@@ -13,7 +15,7 @@ const CodeEditorMain = ({ editorTheme, language }) => {
   const langId = langObj?.id;
 
   const snippet = snippetsData.find((s) => s.language_id == langId);
-  const storageKey = `code-problem-${problemId}-${language}`;
+  const storageKey = `code-user-${userId}-problem-${problemId}-${language}`;
 
   const [code, setCode] = useState("");
 
