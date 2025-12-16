@@ -357,7 +357,9 @@ const CodeEditorPage = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const { id } = useParams();
-  // const userId = "user_1";
+
+  const user = useSelector(state => state.auth.user);
+  console.log("userrrrrrrrrr... : ", user);
 
   const showAI = useSelector(state => state.showAIPanel.showAI);
 

@@ -31,7 +31,6 @@ const Editorial = () => {
   const [language, setLanguage] = useState("python");
   const [copied, setCopied] = useState(false);
   const [locked, setLocked] = useState(true);
-  const [count, setCount] = useState(Math.max(0, 5-subLength))
 
   const approach = editorial.content.approaches[approachIndex];
   const languages = Object.keys(approach.code);
@@ -43,19 +42,16 @@ const Editorial = () => {
   };
 
 
+  console.log('subs: ', submissions);
   useEffect(() => {
-    if(count == 0) {
-      setLocked(false);
-    }
-
     submissions.forEach((sub) => {
-      if(sub.status.toLowerCase() == "accepted") {
-        setCount(0);
+      console.log(sub.status);
+      if(sub.status == "AC") {
         setLocked(false);
       }
     });
 
-  }, [count, submissions]);
+  }, [submissions]);
 
 
   return (
@@ -179,7 +175,7 @@ const Editorial = () => {
                   lineHeight: 1.6,
                 }}
               >
-                Editorial will unlock after <strong style={{ color: palette.textPrimary, fontWeight: 600 }}>{count} submissions</strong>
+                Editorial will unlock after your<strong style={{ color: palette.textPrimary, fontWeight: 600 }}> first correct submission</strong>
               </Typography>
             </Box>
           )}
