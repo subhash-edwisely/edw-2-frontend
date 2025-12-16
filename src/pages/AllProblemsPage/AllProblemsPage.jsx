@@ -97,7 +97,15 @@ function AllProblemsPage() {
   /* ---------------- UI ---------------- */
 
   return (
-    <Box sx={{ px: { xs: 2, md: 6 }, py: 4 }}>
+    <Box
+  sx={{
+    minHeight: "100vh",
+    px: { xs: 2, md: 6 },
+    py: 4,
+    backgroundColor: "background.default",
+  }}
+>
+
       <TopicGrid />
 
       {selectedTopic && (

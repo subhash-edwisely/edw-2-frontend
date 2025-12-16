@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as api from "../../../api/api";
 import { sendAIMessageAPI } from "../../../api/api";
 
-// =========================
-// Async Thunks
-// =========================
+/* =========================
+   Async Thunks
+========================= */
 
 export const fetchHints = createAsyncThunk(
   "ai/fetchHints",
@@ -23,10 +23,15 @@ export const unlockHint = createAsyncThunk(
     const state = thunkAPI.getState();
     const userId = state.auth.user?.id;
 
-    if (!userId) return thunkAPI.rejectWithValue("User not logged in");
+    if (!userId) {
+      return thunkAPI.rejectWithValue("User not logged in");
+    }
 
     const res = await api.unlockHintAPI({ userId, hintId });
-    if (!res.success) throw new Error(res.message || "Failed to unlock hint");
+
+    if (!res.success) {
+      throw new Error(res.message || "Failed to unlock hint");
+    }
 
     return { problemId, ...res.data };
   }
@@ -34,31 +39,86 @@ export const unlockHint = createAsyncThunk(
 
 export const sendMessage = createAsyncThunk(
   "ai/sendMessage",
-  async ({ message, problemId, code }) => {
-    const res = await sendAIMessageAPI({ problemId, message, code });
-    return { problemId, response: res.message }; // use `res.message`
+  async ({ problemId, message }, thunkAPI) => {
+    try {
+      if (!message?.trim()) {
+        return thunkAPI.rejectWithValue("Empty message");
+      }
+
+      const state = thunkAPI.getState();
+      const problem = state.problem;
+
+      // ---------- Build full problem context ----------
+      const problemContext = {
+        id: problem.id || null,
+        title: problem.data?.title || "",
+        description: Array.isArray(problem.data?.description)
+          ? problem.data.description.filter(Boolean).join("\n")
+          : problem.data?.description || "",
+        difficulty: problem.data?.difficulty || "",
+        constraints: problem.constraints?.map(c => ({ content: c.content })) || [],
+        hints: problem.hints?.map(h => ({ content: h.content })) || [],
+        tags: problem.tags?.map(t => ({ category: t.category, name: t.name })) || [],
+        editorial: problem.editorial || {},
+        testcases: problem.testcases || [],
+        snippets: problem.snippets || [],
+        submissions: problem.submissions || [],
+        languages: problem.languages || [],
+      };
+
+      // ---------- Get saved code ----------
+      const storageKey = `code:${problem.id}`;
+      const savedCode = localStorage.getItem(storageKey) || "";
+
+      // ---------- Prepare recent chat history ----------
+      const chat = state.ai.chats[problemId];
+      const history = (chat?.messages || [])
+        .slice(-8)
+        .map(m => ({
+          role: m.sender === "user" ? "user" : "assistant",
+          content: m.text,
+        }));
+
+      console.log("Sending AI message:", { problemId, message, problemContext, savedCode, history });
+
+      // ---------- Call backend AI API ----------
+      const res = await sendAIMessageAPI({
+        problemId,
+        message,
+        context: {
+          problem: problemContext,
+          code: savedCode,
+          history,
+        },
+      });
+
+      return {
+        problemId,
+        text: res.data.text,
+      };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || "AI request failed");
+    }
   }
 );
 
 
-// =========================
-// Initial State
-// =========================
+/* =========================
+   Initial State
+========================= */
 
 const initialState = {
   chats: {}, // { [problemId]: { messages, hints, unlockedHints, xp, loading, error } }
 };
 
-// =========================
-// Helper
-// =========================
+/* =========================
+   Helper
+========================= */
 
 const ensureChat = (state, problemId) => {
   if (!state.chats[problemId]) {
     state.chats[problemId] = {
-      messages: [
-        { sender: "assistant", text: "Hi! I'm your coding assistant. How can I help you?" },
-      ],
+      messages: [],
       hints: [],
       unlockedHints: [],
       xp: 50,
@@ -68,9 +128,9 @@ const ensureChat = (state, problemId) => {
   }
 };
 
-// =========================
-// Slice
-// =========================
+/* =========================
+   Slice
+========================= */
 
 const aiSlice = createSlice({
   name: "ai",
@@ -79,22 +139,17 @@ const aiSlice = createSlice({
     addUserMessage: (state, action) => {
       const { problemId, text } = action.payload;
       ensureChat(state, problemId);
-      state.chats[problemId].messages.push({ sender: "user", text });
-    },
-    addAssistantMessage: (state, action) => {
-      const { problemId, text } = action.payload;
-      ensureChat(state, problemId);
-      state.chats[problemId].messages.push({ sender: "assistant", text });
-    },
-    deductXp: (state, action) => {
-      const { problemId, amount } = action.payload;
-      ensureChat(state, problemId);
-      state.chats[problemId].xp -= amount;
+
+      state.chats[problemId].messages.push({
+        sender: "user",
+        text,
+      });
     },
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Hints
+
+      /* -------- Fetch Hints -------- */
       .addCase(fetchHints.pending, (state, action) => {
         const { problemId } = action.meta.arg;
         ensureChat(state, problemId);
@@ -103,8 +158,8 @@ const aiSlice = createSlice({
       .addCase(fetchHints.fulfilled, (state, action) => {
         const { problemId, data } = action.payload;
         ensureChat(state, problemId);
-        state.chats[problemId].loading = false;
         state.chats[problemId].hints = data;
+        state.chats[problemId].loading = false;
       })
       .addCase(fetchHints.rejected, (state, action) => {
         const { problemId } = action.meta.arg;
@@ -113,47 +168,68 @@ const aiSlice = createSlice({
         state.chats[problemId].error = action.error.message;
       })
 
-      // Send Message
+      /* -------- Send Message -------- */
       .addCase(sendMessage.pending, (state, action) => {
         const { problemId } = action.meta.arg;
         ensureChat(state, problemId);
         state.chats[problemId].loading = true;
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
-        const { problemId, response } = action.payload;
+        const { problemId, text } = action.payload;
         ensureChat(state, problemId);
+
+        state.chats[problemId].messages.push({
+          sender: "assistant",
+          text,
+        });
+
         state.chats[problemId].loading = false;
-        state.chats[problemId].messages.push({ sender: "assistant", text: response });
       })
       .addCase(sendMessage.rejected, (state, action) => {
         const { problemId } = action.meta.arg;
         ensureChat(state, problemId);
+
         state.chats[problemId].loading = false;
-        state.chats[problemId].messages.push({ sender: "assistant", text: "⚠️ Something went wrong." });
+        state.chats[problemId].error = action.payload;
+
+        state.chats[problemId].messages.push({
+          sender: "assistant",
+          text: "⚠️ Something went wrong. Please try again.",
+        });
       })
 
-      // Unlock Hint
+      /* -------- Unlock Hint -------- */
       .addCase(unlockHint.fulfilled, (state, action) => {
         const { problemId, hint, remainingXP } = action.payload;
         ensureChat(state, problemId);
 
         const chat = state.chats[problemId];
 
-        const index = chat.hints.findIndex(h => h.id === hint.id);
-        if (index !== -1) chat.hints[index] = hint;
+        const idx = chat.hints.findIndex(h => h.id === hint.id);
+        if (idx !== -1) chat.hints[idx] = hint;
 
-        if (!chat.unlockedHints.includes(hint.level)) chat.unlockedHints.push(hint.level);
+        if (!chat.unlockedHints.includes(hint.level)) {
+          chat.unlockedHints.push(hint.level);
+        }
 
         chat.xp = remainingXP;
-        chat.messages.push({ sender: "assistant", text: hint.content });
+
+        chat.messages.push({
+          sender: "assistant",
+          text: hint.content,
+        });
       })
       .addCase(unlockHint.rejected, (state, action) => {
         const { problemId } = action.meta.arg;
         ensureChat(state, problemId);
-        state.chats[problemId].messages.push({ sender: "assistant", text: "⚠️ Failed to unlock hint." });
+
+        state.chats[problemId].messages.push({
+          sender: "assistant",
+          text: "⚠️ Failed to unlock hint.",
+        });
       });
   },
 });
 
-export const { addUserMessage, addAssistantMessage, deductXp } = aiSlice.actions;
+export const { addUserMessage } = aiSlice.actions;
 export default aiSlice.reducer;

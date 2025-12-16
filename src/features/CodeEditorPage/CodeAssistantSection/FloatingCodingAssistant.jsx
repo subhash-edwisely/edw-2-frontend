@@ -73,7 +73,8 @@ const FloatingCodingAssistant = ({ problem, code }) => {
   const handleSend = () => {
     if (!input.trim()) return;
     dispatch(addUserMessage({ problemId: problem.id, text: input }));
-    dispatch(sendMessage({ problemId: problem.id, message: input, code }));
+    dispatch(sendMessage({ problemId: problem.id, message: input }));
+
     setInput("");
   };
 
