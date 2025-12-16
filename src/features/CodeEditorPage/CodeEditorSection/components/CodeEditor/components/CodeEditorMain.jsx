@@ -1,58 +1,49 @@
 import { Editor } from '@monaco-editor/react';
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { getAllLanguages } from '../../../../../../api/api.js';
 
 const CodeEditorMain = ({ editorTheme, language }) => {
-
   const problemId = useSelector(state => state.problem.id);
   const snippetsData = useSelector(state => state.problem.snippets);
   const langs = useSelector(state => state.problem.languages);
-  
-  console.log("lang : ", langs)
-  
-  const langObj = langs.find((lang) => lang.name.toLowerCase() === language.toLowerCase());
+
+  const langObj = langs.find(
+    (lang) => lang.name.toLowerCase() === language.toLowerCase()
+  );
   const langId = langObj?.id;
 
   const snippet = snippetsData.find((s) => s.language_id == langId);
-  const initialCode = snippet?.code ?? "";
-  console.log('this is initial code:', initialCode);
-  console.log("its lang : ", langObj);
+  const storageKey = `code-problem-${problemId}-${language}`;
 
-  // State to store code for the current language
-  const [code, setCode] = useState(localStorage.getItem(`code-problem-${problemId}-${language}`) || initialCode);
+  const [code, setCode] = useState("");
 
-  useEffect(() => {
-    console.log("ppppppppppppppppppppppppppppppppppppp: ",problemId)
-    localStorage.setItem(`code-problem-${problemId}-${language}`, initialCode);
-    console.log('this is what it is : ', localStorage.getItem(`code-problem-${problemId}-${language}`));
-    setCode(localStorage.getItem(`code-problem-${problemId}-${language}`) ?? initialCode);
-  }, [problemId, language]);
-
-  // Ref for debounce timer
   const saveTimer = useRef(null);
 
-  // Save code to localStorage with debounce
+  // ✅ Load code when language or problem changes
+  useEffect(() => {
+    if (!problemId || !language) return;
+
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+
+    const savedCode = localStorage.getItem(storageKey);
+
+    setCode(savedCode ?? snippet?.code ?? "");
+  }, [problemId, language, snippet?.code]);
+
+  // ✅ Save code only when user types
   const handleChange = (value) => {
     setCode(value);
 
     if (saveTimer.current) clearTimeout(saveTimer.current);
 
     saveTimer.current = setTimeout(() => {
-      localStorage.setItem(`code-problem-${problemId}-${language}`, value);
-    }, 1000); // 1 second debounce
+      localStorage.setItem(storageKey, value);
+    }, 1000);
   };
-
-  // Load code from localStorage when language changes
-  useEffect(() => {
-    if (saveTimer.current) clearTimeout(saveTimer.current); // cancel any pending save
-    const saved = localStorage.getItem(`code-problem-${problemId}-${language}`);
-    setCode(saved ?? snippet?.code ?? "");
-  }, [language, snippet?.code]);
 
   return (
     <Editor
-      key={language} // important: remount editor when language changes
+      key={language}
       height="100%"
       width="100%"
       language={language}

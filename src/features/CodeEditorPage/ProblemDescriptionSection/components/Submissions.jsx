@@ -100,7 +100,7 @@ const Submissions = () => {
     };
   }, [latestSubmissionData]);
 
-  // Automatically show detailed result when new submission comes in
+  // Automatically show detailed result when new su bmission comes in
   useEffect(() => {
     if (latestSubmission?.id) {
       setShowDetailedResult(true);
@@ -355,7 +355,7 @@ const Submissions = () => {
                 {normalizeStatus(latestSubmission.status)}
               </Typography>
               <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
-                {Math.max(progress.passed-1, 0)} / {progress.total} testcases passed
+                {Math.max(progress.passed, 0)} / {progress.total} testcases executed
               </Typography>
             </Box>
 
@@ -439,13 +439,13 @@ const Submissions = () => {
                 {formatOutput(failedTests[0].expected_output)}
               </Box>
 
-              {failedTests[0].error_message && (
+              {failedTests[0].stderr && (
                 <>
                   <Typography
                     sx={{
                       color: palette.textPrimary,
                       fontSize: "0.938rem",
-                      fontWeight: 600,
+                      fontWeight: 500,
                       mb: 2,
                       mt: 2,
                     }}
@@ -464,7 +464,7 @@ const Submissions = () => {
                       wordBreak: "break-word",
                     }}
                   >
-                    {failedTests[0].error_message}
+                    {failedTests[0].stderr}
                   </Box>
                 </>
               )}
@@ -815,7 +815,7 @@ const Submissions = () => {
                   {normalizeStatus(selectedSubmissionData.status)}
                 </Typography>
                 <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
-                  {Math.max(selectedSubmissionData.testcases_executed-1, 0) || 0} / {selectedSubmissionData.total_testcases || 0} testcases passed
+                  {Math.max(selectedSubmissionData.testcases_executed, 0) || 0} / {selectedSubmissionData.total_testcases || 0} testcases executed
                 </Typography>
               </Stack>
 
