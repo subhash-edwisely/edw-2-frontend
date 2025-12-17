@@ -420,10 +420,20 @@ export const submitCode = async(submissionData) => {
   }
 };
 
-export const sendAIMessageAPI = async ({ problemId, message, code }) => {
-  const response = await api.post("/ai/chat", { problemId, message, code });
+export const sendAIMessageAPI = async ({
+  problemId,
+  message,
+  context,
+}) => {
+  const response = await api.post("/ai/chat", {
+    problemId,
+    message,
+    context,
+  });
+
   return response.data;
 };
+
 
 // Get chat history for a problem
 export const getAIChatHistoryAPI = async (problemId) => {
