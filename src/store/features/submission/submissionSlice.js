@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     currSubData: null,
     testcaseResults: [],
-    runCode: false
+    runCode: false,
+    submitCodeFlag: false
 };
 
 
@@ -34,11 +35,15 @@ const submissionSlice = createSlice({
 
         getRunStatus(state, action) {
             state.runCode = action.payload;
+        },
+
+        getSubmitStatus(state, action) {
+            state.submitCodeFlag = action.payload;
         }
 
     }
 });
 
 
-export const { getLatestSubmissionData, getTestcaseResults, getRunStatus } = submissionSlice.actions;
+export const { getLatestSubmissionData, getTestcaseResults, getRunStatus, getSubmitStatus } = submissionSlice.actions;
 export default submissionSlice.reducer;

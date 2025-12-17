@@ -68,6 +68,7 @@ const Editorial = () => {
           border: `1px solid ${palette.cardBorder}`,
           borderRadius: 3,
           overflow: "hidden",
+          height: locked ? "100vh" : '100%'
         }}
       >
         {/* Header */}

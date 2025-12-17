@@ -5,12 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { togglePanelVisibility } from '../../../../../../store/features/showAIPanel/showAISlice';
 import { useTheme } from '@mui/material/styles';
 
-const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, submitCode, afterRunCodeClick, setIsDefault }) => {
+const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, afterRunCodeClick, setIsDefault }) => {
 
     const theme = useTheme();
     const showAi = useSelector((state) => state.showAIPanel.showAI);
     const dispatch = useDispatch();
     const runCode = useSelector(state => state.submissions.runCode);
+    const submitCode = useSelector(state => state.submissions.submitCodeFlag);
 
     const isLight = theme.palette.mode === "light";
 

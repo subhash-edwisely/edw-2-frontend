@@ -5,7 +5,7 @@ import CodeEditorMenu from './components/CodeEditorMenu'
 import CodeEditorMain from './components/CodeEditorMain'
 import { useDispatch, useSelector } from 'react-redux'
 import { submitCode } from '../../../../../api/api.js';
-import { getTestcaseResults, getLatestSubmissionData, getRunStatus } from "../../../../../store/features/submission/submissionSlice.js";
+import { getTestcaseResults, getLatestSubmissionData, getRunStatus, getSubmitStatus } from "../../../../../store/features/submission/submissionSlice.js";
 import { updateTabIndex } from '../../../../../store/features/activeTabSlice.js'
 
 
@@ -15,7 +15,7 @@ const CodeEditor = () => {
   const [editorTheme, setEditorTheme] = useState("vs-dark");
   const [language, setLanguage] = useState("python");
   const runCode = useSelector(state => state.submissions.runCode);
-  const [submitCodeFlag, setSubmitCodeFlag] = useState(false);
+  const submitCodeFlag = useSelector(state => state.submissions.submitCodeFlag);
   const problemId = useSelector(state => state.problem.id);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [isDefault, setIsDefault] = useState(false);
@@ -68,7 +68,7 @@ const CodeEditor = () => {
       }
 
       else if(mode == "Submit") {
-          setSubmitCodeFlag(true);
+          dispatch(getSubmitStatus(true));
       }
 
       await runCodeExecution(mode);
@@ -78,7 +78,7 @@ const CodeEditor = () => {
     }
     finally {
       dispatch(getRunStatus(false));
-      setSubmitCodeFlag(false);
+      dispatch(getSubmitStatus(false));
       dispatch(updateTabIndex(2));
     }
   };
@@ -91,7 +91,6 @@ const CodeEditor = () => {
           setEditorTheme={setEditorTheme} 
           language={language}
           setLanguage={setLanguage}
-          submitCode={submitCodeFlag}
           afterRunCodeClick={afterRunCodeClick}
           setIsDefault={setIsDefault}
         />

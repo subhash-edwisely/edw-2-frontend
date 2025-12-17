@@ -51,6 +51,7 @@ const Submissions = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSubmissionData, setSelectedSubmissionData] = useState(null);
   const [isLoadingSubmission, setIsLoadingSubmission] = useState(false);
+  const submitCode = useSelector(state => state.submissions.submitCodeFlag);
   const [copied, setCopied] = useState(false);
   const [showTestCases, setShowTestCases] = useState(false);
   const [showLatestCode, setShowLatestCode] = useState(false);
@@ -59,6 +60,7 @@ const Submissions = () => {
   
   // New state for controlling the view
   const [showDetailedResult, setShowDetailedResult] = useState(false);
+  const [isLoadingDetailedResult, setIsLoadingDetailedResult] = useState(false);
 
   // Transform currSubData to detailed submission format
   const latestSubmission = useMemo(() => {
@@ -69,15 +71,15 @@ const Submissions = () => {
       status: latestSubmissionData.submission_status,
 
       totalExecTime:
-        latestSubmissionData.avg_time ??
         latestSubmissionData.total_time ??
+        latestSubmissionData.avg_time ??
         0,
 
       maxExecTime: latestSubmissionData.max_time ?? 0,
 
       totalExecMemory:
-        latestSubmissionData.avg_memory ??
         latestSubmissionData.total_memory ??
+        latestSubmissionData.avg_memory ??
         0,
 
       maxExecMemory: latestSubmissionData.max_memory ?? 0,
@@ -106,26 +108,32 @@ const Submissions = () => {
   }, [latestSubmissionData]);
 
   // Automatically show detailed result when new submission comes in
-useEffect(() => {
-  if (latestSubmission?.id) {
-    setShowTestCases(false);
-    setShowLatestCode(false);
+  useEffect(() => {
+    if (latestSubmission?.id) {
+      setShowTestCases(false);
+      setShowLatestCode(false);
 
-    console.log('latest submission: ', latestSubmission);
+      console.log('latest submission: ', latestSubmission);
 
-    // Only show detailed result for Submit mode, not Run mode
-    if (latestSubmission?.mode === "Submit") {
-      setShowDetailedResult(true);
-    } else {
-      setShowDetailedResult(false);
-      // Optionally add the submission to the list immediately for Run mode
-      const totalSubmissions = structuredClone(submissions);
-      totalSubmissions.push(latestSubmission);
-      dispatch(updateSubmissionsData(totalSubmissions));
-      dispatch(getLatestSubmissionData(null));
+      // Only show detailed result for Submit mode, not Run mode
+      if (latestSubmission?.mode === "Submit") {
+        setIsLoadingDetailedResult(true);
+        setShowDetailedResult(true);
+        
+        // Simulate loading time (remove this if you have actual async data to load)
+        setTimeout(() => {
+          setIsLoadingDetailedResult(false);
+        }, 800);
+      } else {
+        setShowDetailedResult(false);
+        // Optionally add the submission to the list immediately for Run mode
+        const totalSubmissions = structuredClone(submissions);
+        totalSubmissions.push(latestSubmission);
+        dispatch(updateSubmissionsData(totalSubmissions));
+        dispatch(getLatestSubmissionData(null));
+      }
     }
-  }
-}, [latestSubmission?.id, latestSubmission?.mode]); // Added mode to dependencies
+  }, [latestSubmission?.id, latestSubmission?.mode]); // Added mode to dependencies
 
   // Sort submissions descending by created_at
   const sortedSubs = useMemo(() => {
@@ -171,6 +179,7 @@ useEffect(() => {
     totalSubmissions.push(latestSubmission);
 
     setShowDetailedResult(false);
+    setIsLoadingDetailedResult(false);
     dispatch(updateSubmissionsData(totalSubmissions));
     dispatch(getLatestSubmissionData(null));
   };
@@ -276,20 +285,20 @@ useEffect(() => {
         {/* Header Skeleton */}
         <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}` }}>
           <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Skeleton variant="text" width={120} height={32} />
-            <Skeleton variant="text" width={150} height={24} />
+            <Skeleton variant="text" width={120} height={32} sx={{ bgcolor: palette.exampleBg }} />
+            <Skeleton variant="text" width={150} height={24} sx={{ bgcolor: palette.exampleBg }} />
           </Stack>
         </Box>
 
         {/* Metrics Cards Skeleton */}
         <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: "flex", flexDirection: "column", gap: 1.5 }}>
           <Stack direction="row" spacing={2}>
-            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
-            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
           </Stack>
           <Stack direction="row" spacing={2}>
-            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
-            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
           </Stack>
         </Box>
 
@@ -301,8 +310,8 @@ useEffect(() => {
             alignItems="center"
             sx={{ mb: 2 }}
           >
-            <Skeleton variant="text" width={60} height={28} />
-            <Skeleton variant="circular" width={32} height={32} />
+            <Skeleton variant="text" width={60} height={28} sx={{ bgcolor: palette.exampleBg }} />
+            <Skeleton variant="circular" width={32} height={32} sx={{ bgcolor: palette.exampleBg }} />
           </Stack>
 
           <Box
@@ -315,16 +324,16 @@ useEffect(() => {
             }}
           >
             <Stack spacing={1.5}>
-              <Skeleton variant="text" width="90%" height={20} />
-              <Skeleton variant="text" width="75%" height={20} />
-              <Skeleton variant="text" width="85%" height={20} />
-              <Skeleton variant="text" width="80%" height={20} />
-              <Skeleton variant="text" width="70%" height={20} />
-              <Skeleton variant="text" width="88%" height={20} />
-              <Skeleton variant="text" width="92%" height={20} />
-              <Skeleton variant="text" width="78%" height={20} />
-              <Skeleton variant="text" width="85%" height={20} />
-              <Skeleton variant="text" width="65%" height={20} />
+              <Skeleton variant="text" width="90%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="75%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="85%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="70%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="88%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="92%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="78%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="85%" height={20} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="text" width="65%" height={20} sx={{ bgcolor: palette.exampleBg }} />
             </Stack>
           </Box>
         </Box>
@@ -332,9 +341,160 @@ useEffect(() => {
     );
   };
 
+  // Skeleton loader for detailed result view
+  const renderDetailedResultSkeleton = () => {
+    return (
+      <Box sx={{ mx: "auto" }}>
+        {/* Back Button */}
+        <Box
+          sx={{
+            borderBottom: `1px solid ${palette.cardBorder}`
+          }}
+        >
+          <Button
+            startIcon={<ArrowLeft size={18} />}
+            onClick={handleBackToSubmissions}
+            sx={{
+              textTransform: "none",
+              color: palette.textSecondary,
+              fontWeight: 600,
+              fontSize: "0.875rem",
+              "&:hover": {
+                backgroundColor: palette.exampleBg,
+              },
+            }}
+          >
+            All Submissions
+          </Button>
+        </Box>
+
+        {/* Header Skeleton */}
+        <Box sx={{ display: 'flex', alignItems: 'center', px: 4, gap: 1, mt: 3, mb: 3 }}>
+          <Skeleton variant="text" width={150} height={40} sx={{ bgcolor: palette.exampleBg }} />
+          <Skeleton variant="text" width={180} height={24} sx={{ bgcolor: palette.exampleBg }} />
+        </Box>
+
+        {/* Metrics Cards Skeleton */}
+        <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Stack direction="row" spacing={2}>
+            <Skeleton variant="rounded" width="50%" height={100} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+            <Skeleton variant="rounded" width="50%" height={100} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Skeleton variant="rounded" width="50%" height={100} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+            <Skeleton variant="rounded" width="50%" height={100} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+          </Stack>
+        </Box>
+
+        {/* Code Section Skeleton */}
+        <Box sx={{ px: 4, py: 3 }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Skeleton variant="text" width={60} height={28} sx={{ bgcolor: palette.exampleBg }} />
+              <Skeleton variant="rounded" width={80} height={24} sx={{ borderRadius: "12px", bgcolor: palette.exampleBg }} />
+            </Stack>
+            <Skeleton variant="circular" width={32} height={32} sx={{ bgcolor: palette.exampleBg }} />
+          </Stack>
+
+          <Box
+            sx={{
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: `1px solid ${palette.codeBlockBorder}`,
+              backgroundColor: palette.codeBg,
+              p: 3,
+            }}
+          >
+            <Stack spacing={1.5}>
+              {[...Array(15)].map((_, i) => (
+                <Skeleton 
+                  key={i} 
+                  variant="text" 
+                  width={`${Math.random() * 30 + 60}%`} 
+                  height={20} 
+                  sx={{ bgcolor: palette.exampleBg }} 
+                />
+              ))}
+            </Stack>
+          </Box>
+        </Box>
+      </Box>
+    );
+  };
+
+  // Skeleton loader for submissions list
+  const renderSubmissionsListSkeleton = () => {
+    return (
+      <Box sx={{ maxWidth: "900px", mx: "auto" }}>
+        <Paper
+          elevation={0}
+          sx={{
+            backgroundColor: palette.cardBg,
+            border: `1px solid ${palette.cardBorder}`,
+            overflow: "hidden",
+          }}
+        >
+          {/* Header */}
+          <Box sx={{ px: 5, py: 4, borderBottom: `1px solid ${palette.cardBorder}` }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: palette.textPrimary }}>
+              Submissions
+            </Typography>
+          </Box>
+
+          {/* Skeleton Rows */}
+          <Stack spacing={0}>
+            {[...Array(3)].map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr 1fr auto",
+                  alignItems: "center",
+                  gap: 3,
+                  px: 5,
+                  py: 3,
+                  borderBottom: index < 2 ? `1px solid ${palette.cardBorder}` : "none",
+                }}
+              >
+                {/* Status and Date Column */}
+                <Stack spacing={0.5}>
+                  <Skeleton variant="text" width={100} height={24} sx={{ bgcolor: palette.exampleBg }} />
+                  <Skeleton variant="text" width={80} height={20} sx={{ bgcolor: palette.exampleBg }} />
+                </Stack>
+
+                {/* Language */}
+                <Skeleton variant="text" width={70} height={24} sx={{ bgcolor: palette.exampleBg }} />
+
+                {/* Execution Time */}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Skeleton variant="circular" width={16} height={16} sx={{ bgcolor: palette.exampleBg }} />
+                  <Skeleton variant="text" width={60} height={20} sx={{ bgcolor: palette.exampleBg }} />
+                </Stack>
+
+                {/* Memory */}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Skeleton variant="circular" width={16} height={16} sx={{ bgcolor: palette.exampleBg }} />
+                  <Skeleton variant="text" width={70} height={20} sx={{ bgcolor: palette.exampleBg }} />
+                </Stack>
+
+                {/* View Code Button */}
+                <Skeleton variant="rounded" width={100} height={36} sx={{ borderRadius: "8px", bgcolor: palette.exampleBg }} />
+              </Box>
+            ))}
+          </Stack>
+        </Paper>
+      </Box>
+    );
+  };
+
   // Detailed Submission Result View (LeetCode style)
   const renderDetailedSubmissionResult = () => {
     if (!latestSubmission) return null;
+
+    // Show skeleton while loading
+    if (isLoadingDetailedResult || submitCode) {
+      return renderDetailedResultSkeleton();
+    }
 
     const progress = getTestCaseProgress(latestSubmission);
     const failedTests = getFailedTestCases(latestSubmission.testcase_results);
@@ -747,7 +907,7 @@ useEffect(() => {
         key={sub.id}
         sx={{
           display: "grid",
-          gridTemplateColumns: "2fr 1fr 1fr 1fr auto",
+          gridTemplateColumns: "1.5fr 0.75fr 0.75fr 1fr 1fr auto",
           alignItems: "center",
           gap: 3,
           px: 5,
@@ -774,6 +934,22 @@ useEffect(() => {
             {getRelativeTimeOrDate(sub.created_at)}
           </Typography>
         </Stack>
+
+
+        <Chip
+            label={sub.mode}
+            size="small"
+            sx={{
+              height: 20,
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              borderRadius: "6px",
+              bgcolor: sub.is_run ? palette.exampleBg : palette.selectHover,
+              color: palette.textSecondary,
+            }}
+          />
+
+        
 
         {/* Language */}
         <Typography sx={{ color: palette.textPrimary, fontSize: "0.938rem" }}>
@@ -827,6 +1003,11 @@ useEffect(() => {
 
   // Regular Submissions List View
   const renderSubmissionsList = () => {
+    // Show skeleton while submitCode is true
+    if (submitCode) {
+      return renderSubmissionsListSkeleton();
+    }
+
     return (
       <Box sx={{ maxWidth: "900px", mx: "auto" }}>
         <Paper
@@ -905,7 +1086,7 @@ useEffect(() => {
         </Box>
 
         {/* Show skeleton while loading, otherwise show actual content */}
-        {isLoadingSubmission ? (
+        {isLoadingSubmission || submitCode ? (
           renderDialogSkeleton()
         ) : selectedSubmissionData ? (
           <DialogContent sx={{ p: 0, backgroundColor: palette.cardBg }}>
@@ -921,9 +1102,11 @@ useEffect(() => {
                 >
                   {normalizeStatus(selectedSubmissionData.status)}
                 </Typography>
-                <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
-                  {Math.max(selectedSubmissionData.testcases_executed, 0) || 0} / {selectedSubmissionData.total_testcases || 0} testcases executed
-                </Typography>
+                {selectedSubmissionData.mode === "Submit" && 
+                  <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
+                    {Math.max(selectedSubmissionData?.status === "AC" ? selectedSubmissionData.testcases_executed : selectedSubmissionData.testcases_executed-1, 0) || 0} / {selectedSubmissionData.total_testcases || 0} testcases passed
+                  </Typography>
+                }
               </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center">

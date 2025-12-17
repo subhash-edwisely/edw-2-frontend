@@ -213,12 +213,12 @@ const TestcasesBlock = () => {
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   {/* Input */}
                   <Block title="Input">
-                    {currentTestcase.input}
+                    {currentTestcase.input_to_show}
                   </Block>
 
                   {/* Expected Output */}
                   <Block title="Expected Output">
-                    {currentTestcase.expected_output}
+                    {currentTestcase.expected_output_to_show}
                   </Block>
 
                   {currentResult && (
